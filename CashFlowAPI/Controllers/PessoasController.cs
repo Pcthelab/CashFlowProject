@@ -51,7 +51,9 @@ namespace CashFlowAPI.Controllers
             {
                 _context.Transacoes.RemoveRange(pessoa.Transacoes);
             }
-
+            
+            // Lógica que garante a exclusão em cascata: ao remover uma pessoa, 
+            // o Entity Framework remove automaticamente todas as transações dependentes vinculadas a ela.
             _context.Pessoas.Remove(pessoa);
             await _context.SaveChangesAsync();
 
