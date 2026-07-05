@@ -11,7 +11,7 @@
 
 ---
 
-![Preview do Sistema](WIN.png)
+![Preview do Sistema](IMG/WIN.png)
 
 ---
 
