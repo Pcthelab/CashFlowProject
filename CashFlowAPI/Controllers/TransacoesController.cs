@@ -34,7 +34,8 @@ namespace CashFlowAPI.Controllers
             {
                 return BadRequest("O tipo da transação deve ser estritamente 'Despesa' ou 'Receita'.");
             }
-
+            
+            // Lógica que impede que usuários menores de 18 anos registrem transações do tipo 'Receita'
             if (pessoa.Idade < 18 && transacao.Tipo == "Receita")
             {
                 return BadRequest("Regra de Negócio: Usuários menores de 18 anos SÓ podem cadastrar transações do tipo 'Despesa'.");
