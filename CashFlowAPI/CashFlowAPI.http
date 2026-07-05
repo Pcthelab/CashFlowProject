@@ -1,0 +1,15 @@
+@CashFlowAPI_HostAddress = http://localhost:5007
+
+### 1. Cadastrar uma Pessoa (POST)
+POST {{CashFlowAPI_HostAddress}}/api/pessoas
+Content-Type: application/json
+
+{
+  "nome": "Juan"
+}
+
+###
+
+### 2. Listar todas as Pessoas (GET)
+GET {{CashFlowAPI_HostAddress}}/api/pessoas
+Accept: application/json
