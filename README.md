@@ -1,153 +1,119 @@
-﻿# CashFlowProject
+# CashFlow
+
+**Mais controle. Mais tranquilidade.**
+
+Dashboard de gestão financeira com React, TypeScript e uma API REST em .NET. Organize pessoas, registre receitas e despesas e acompanhe os resultados em uma interface responsiva.
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=flat-square&logo=dotnet)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=flat-square&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite)
-![Entity Framework](https://img.shields.io/badge/EF%20Core-8-512BD4?style=flat-square)
-![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite)
+![Entity Framework](https://img.shields.io/badge/EF_Core-10-512BD4?style=flat-square)
 
-**Sistema de Gestão de Fluxo de Caixa Corporativo** — API REST (.NET 10) com frontend em React/TypeScript. Implementa cadastro de pessoas, lançamento de transações financeiras com validações de negócio, exclusão em cascata e relatórios consolidados em tempo real.
+## Preview
 
----
+![Dashboard CashFlow com saldo consolidado, gráficos e resumo por pessoa](IMG/dashboard.png)
 
-![Preview do Sistema](IMG/WIN.png)
+## Funcionalidades
 
----
+- **Visão geral:** saldo disponível, total de receitas e despesas e quantidade de movimentações.
+- **Gráficos:** comparação de receitas e despesas por pessoa e distribuição das movimentações financeiras.
+- **Transações:** histórico com busca por descrição ou pessoa e filtros de receita e despesa.
+- **Pessoas:** cadastro, busca, resumo individual e exclusão com confirmação.
+- **Relatórios:** resultados consolidados e exportação por pessoa em CSV compatível com planilhas.
+- **Interface responsiva:** navegação adaptada para desktop, tablet e celular, formulários em modais e mensagens de sucesso e erro.
+- **Identidade visual:** azul profundo e coral, com menu lateral escuro e cores consistentes nos gráficos e formulários.
 
-## Requisitos Técnicos Atendidos
+Os indicadores usam os dados da API. Os gráficos representam todo o período disponível; o modelo atual não registra a data das transações. O gráfico por pessoa mostra até seis pessoas, ordenadas pelo total movimentado, e a tabela inclui todas.
 
-| Requisito | Implementação | Status |
-|---|---|---|
-| Validação de menores de idade | Bloqueio automático para lançamento de receitas por usuários com menos de 18 anos (`TransacoesController.cs`) | ✅ |
-| Cascade delete | Exclusão em cascata de transações ao remover pessoa (`PessoasController.cs`, com `.Include()`) | ✅ |
-| Relatório consolidado | Cálculo de totais por pessoa e saldo líquido geral (`RelatoriosController.cs`) | ✅ |
-| API RESTful | 6 endpoints (GET/POST/DELETE) com respostas JSON tipadas | ✅ |
-| Tipagem forte (TypeScript) | Interfaces `Pessoa`, `Transacao`, `PorPessoaItem`, `Relatorio`, sem uso de `any` | ✅ |
-| Validação de entrada | Verificação de existência da pessoa e de tipo de transação válido | ✅ |
-| UI corporativa | Design minimalista fintech, paleta sóbria e hierarquia visual | ✅ |
-| Clean code | Sem comentários explicativos, nomes claros, separação de responsabilidades | ✅ |
+## Tecnologias
 
----
+| Camada | Tecnologias |
+| --- | --- |
+| Frontend | React 19, TypeScript 6, Vite 8, CSS e Axios |
+| Backend | ASP.NET Core 10 e Entity Framework Core 10 |
+| Persistência | SQLite e migrations do EF Core |
+| Verificação | TypeScript, build do Vite e Oxlint |
 
-## Arquitetura
+## Como executar
 
-### Back-end (.NET 10)
+### Pré-requisitos
 
-```
-CashFlowAPI
-├── Controllers/
-│   ├── PessoasController.cs      → CRUD de pessoas + cascade delete
-│   ├── TransacoesController.cs   → Validações e regras de negócio
-│   └── RelatoriosController.cs   → Agregações e cálculos consolidados
-├── Models/
-│   ├── Pessoa.cs
-│   ├── Transacao.cs
-│   └── DataContext.cs            → EF Core
-└── Program.cs                    → Configuração de CORS, DI e migrations
-```
+- .NET SDK 10.
+- Node.js compatível com Vite 8 (22.12+ na linha 22 ou uma versão posterior compatível) e npm.
 
-### Front-end (React + TypeScript)
-
-```
-cashflow-frontend/src
-├── App.tsx          → Componente principal
-├── main.tsx         → Entry point
-├── index.css        → Reset e estilos base
-└── vite.config.ts   → Configuração do Vite
-```
-
----
-
-## Como Executar
-
-### Back-end
+### 1. Inicie a API
 
 ```bash
 cd CashFlowAPI
-dotnet build
-dotnet run
+dotnet restore
+dotnet run --launch-profile http
 ```
 
-API disponível em: `http://localhost:5007`
+API: [http://localhost:5007](http://localhost:5007).
 
-### Front-end
+O repositório inclui um banco SQLite. Para recriá-lo ou aplicar migrations, com a ferramenta `dotnet-ef` 10 instalada, execute `dotnet ef database update` dentro de `CashFlowAPI`.
+
+### 2. Inicie o frontend
+
+Em outro terminal:
 
 ```bash
 cd cashflow-frontend
-npm install
+npm ci
 npm run dev
 ```
 
-Frontend disponível em: `http://localhost:5173`
+Abra [http://localhost:5173](http://localhost:5173). A política CORS da API permite essa origem.
 
----
+O frontend usa `http://localhost:5007/api` por padrão. Para outra URL, defina `VITE_API_URL` em um arquivo `.env.local` no diretório do frontend. Se alterar a origem do frontend, ajuste também o CORS em `CashFlowAPI/Program.cs`.
 
-## Endpoints da API
+### Verificação do frontend
+
+```bash
+npm run build
+npm run lint
+```
+
+## Regras de negócio
+
+1. Pessoas menores de 18 anos só podem registrar despesas. O formulário orienta o usuário e a API valida a regra.
+2. Toda transação precisa estar vinculada a uma pessoa existente.
+3. Os tipos aceitos pela API são `Receita` e `Despesa`.
+4. Excluir uma pessoa também exclui suas transações. A interface pede confirmação antes da remoção.
+5. O saldo individual e o saldo geral correspondem às receitas menos as despesas.
+
+## Endpoints
 
 | Método | Endpoint | Descrição |
-|---|---|---|
-| `GET` | `/api/pessoas` | Lista todas as pessoas |
-| `POST` | `/api/pessoas` | Cadastra uma nova pessoa |
-| `DELETE` | `/api/pessoas/{id}` | Remove a pessoa e as transações vinculadas |
-| `GET` | `/api/transacoes` | Lista todas as transações |
-| `POST` | `/api/transacoes` | Registra uma nova transação com validações |
-| `GET` | `/api/relatorios` | Retorna o relatório consolidado (receitas, despesas, saldos) |
+| --- | --- | --- |
+| GET | `/api/pessoas` | Lista pessoas |
+| POST | `/api/pessoas` | Cadastra pessoa |
+| DELETE | `/api/pessoas/{id}` | Remove pessoa e transações vinculadas |
+| GET | `/api/transacoes` | Lista transações |
+| POST | `/api/transacoes` | Registra transação |
+| GET | `/api/relatorios` | Retorna totais por pessoa e saldo geral |
 
----
+## Estrutura
 
-## Regras de Negócio
+```text
+CashFlowAPI/
+├── Controllers/        # Pessoas, transações e relatórios
+├── Models/             # Entidades e contexto do banco
+├── Migrations/         # Evolução do banco de dados
+└── Program.cs          # Serviços, rotas e CORS
+cashflow-frontend/
+├── src/
+│   ├── App.tsx         # Dashboard e integração com a API
+│   ├── App.css         # Componentes e layout responsivo
+│   ├── index.css       # Estilos globais
+│   └── main.tsx        # Entrada da aplicação
+└── public/             # Favicon e arquivos públicos
+IMG/
+└── dashboard.png       # Captura da interface
+```
 
-1. **Restrição por idade** — usuários menores de 18 anos só podem registrar despesas; receitas são bloqueadas.
-2. **Validação de pessoa** — toda transação deve referenciar uma pessoa existente.
-3. **Tipos de transação válidos** — o sistema aceita apenas `Despesa` ou `Receita`.
-4. **Exclusão em cascata** — remover uma pessoa apaga automaticamente todas as transações vinculadas a ela.
-5. **Cálculo de saldo** — saldo individual = total de receitas − total de despesas.
+## Sobre
 
----
-
-## Banco de Dados
-
-SQLite, com migrations gerenciadas via EF Core:
-
-- Tabela `Pessoas` (`Id`, `Nome`, `Idade`)
-- Tabela `Transacoes` (`Id`, `PessoaId`, `Descricao`, `Valor`, `Tipo`, `Data`)
-- Relacionamento one-to-many com integridade referencial garantida por constraint
-
----
-
-## Design & UX
-
-- **Paleta corporativa:** tons sóbrios de fintech (`#1e293b`, `#059669`, `#dc2626`)
-- **Tipografia:** fontes do sistema (SF Pro, Segoe UI, Roboto)
-- **Layout:** grid responsivo em 2 colunas, com painel de extrato consolidado
-- **Acessibilidade:** aria-labels, contraste WCAG AA, navegação por teclado
-
----
-
-## Dependências Principais
-
-**Backend**
-- `Microsoft.EntityFrameworkCore` — ORM
-- `Microsoft.AspNetCore.Mvc` — framework web
-
-**Frontend**
-- `react` — biblioteca de UI
-- `axios` — cliente HTTP
-- `typescript` — tipagem estática
-
----
-
-## Destaques da Implementação
-
-- Código autoexplicativo, sem comentários redundantes
-- Tipagem rigorosa em TypeScript, sem uso de `any`
-- Regras de negócio centralizadas no backend, com feedback claro ao usuário
-- Uso de `Promise.all()` para paralelizar chamadas e índices no banco para performance
-- Interface limpa: sombras mínimas, espaçamento consistente, sem gradientes desnecessários
-
----
-
-## Licença
-
-Projeto desenvolvido como exercício técnico de demonstração de competências.
+Projeto desenvolvido como exercício técnico de gestão de fluxo de caixa.
